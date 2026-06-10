@@ -23,7 +23,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* LOADER */
 #loader{position:fixed;inset:0;background:var(--g1);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.6s,visibility 0.6s}
 #loader.hide{opacity:0;visibility:hidden;pointer-events:none}
-.l-logo{width:72px;height:72px;background:var(--g2);border-radius:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:36px;animation:pop 0.7s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
+.l-logo{width:72px;height:72px;background:transparent;border-radius:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:36px;animation:pop 0.7s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
+.l-logo img{mix-blend-mode:multiply;width:100%;height:100%;object-fit:cover;display:block}
 .l-brand{font-size:26px;font-weight:800;color:#fff;letter-spacing:3px;margin-top:14px;animation:fadeUp 0.5s ease 0.4s both}
 .l-brand em{color:var(--accent);font-style:normal}
 .l-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px;letter-spacing:1px;animation:fadeUp 0.5s ease 0.6s both}
@@ -39,7 +40,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* TOP BAR */
 .topbar{background:linear-gradient(135deg,var(--g1),var(--g2));padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25)}
 .tl{display:flex;align-items:center;gap:10px}
-.tl-icon{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tl-icon{width:36px;height:36px;background:transparent;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tl-icon img{mix-blend-mode:multiply;width:100%;height:100%;object-fit:cover;display:block}
 .tl-text .brand{font-size:15px;font-weight:800;color:#fff;letter-spacing:1px}
 .tl-text .tag{font-size:10px;color:rgba(255,255,255,0.5)}
 .cart-btn{background:var(--accent);color:var(--g1);border:none;border-radius:22px;padding:7px 14px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;transition:transform 0.15s}
@@ -131,7 +133,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 <div id="main-screen">
   <div class="topbar">
     <div class="tl">
-      <div class="tl-icon" style="overflow:hidden;padding:0"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+      <div class="tl-icon"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png"></div>
       <div class="tl-text">
         <div class="brand">CHF POINT</div>
         <div class="tag">চতন্তর মানবিক ফান্ড</div>
@@ -154,7 +156,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   <div class="topbar">
     <div class="tl">
       <span onclick="goBack()" style="color:#fff;font-size:22px;cursor:pointer;margin-right:6px">←</span>
-      <div class="tl-icon" style="overflow:hidden;padding:0"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+      <div class="tl-icon"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png"></div>
       <div class="tl-text">
         <div class="brand">CHF POINT</div>
         <div class="tag">অর্ডার সম্পন্ন করুন</div>

@@ -121,6 +121,7 @@ input:checked+.slider:before{transform:translateX(20px)}
 .sbadge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:10px}
 .s-Pending{background:#fff3cd;color:#856404}
 .s-Processing{background:#dbeafe;color:#1e40af}
+.s-Dispatched{background:#e0f2fe;color:#0369a1}
 .s-Delivered{background:#d1fae5;color:#065f46}
 .s-Cancelled{background:#fee2e2;color:#991b1b}
 .obody{font-size:13px;color:var(--muted);line-height:1.9}
@@ -141,7 +142,6 @@ input:checked+.slider:before{transform:translateX(20px)}
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" /></div>
@@ -154,7 +154,6 @@ input:checked+.slider:before{transform:translateX(20px)}
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
 <div id="admin-panel" style="display:none">
   <div class="header">
     <div class="hl">
@@ -174,7 +173,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="tab" onclick="switchTab('categories',this)">🗂️ ক্যাটাগরি</div>
   </div>
 
-  <!-- ORDERS TAB -->
   <div id="tab-orders" class="content">
     <div class="stats-row">
       <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-label">মোট অর্ডার</div></div>
@@ -186,7 +184,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
   </div>
 
-  <!-- ADD PRODUCT TAB -->
   <div id="tab-add" class="content" style="display:none">
     <div class="card">
       <div class="card-title">➕ নতুন পণ্য যোগ করুন</div>
@@ -221,7 +218,6 @@ input:checked+.slider:before{transform:translateX(20px)}
         <div class="fg"><label>Stock</label><input id="p-stock" type="number" placeholder="99" min="0" value="99" /></div>
       </div>
 
-      <!-- WEIGHT TOGGLE -->
       <div class="toggle-row">
         <div>
           <div class="toggle-label">⚖️ গ্রাম হিসেবে বিক্রি হয়?</div>
@@ -242,7 +238,6 @@ input:checked+.slider:before{transform:translateX(20px)}
         </div>
       </div>
 
-      <!-- পিস-ভিত্তিক minimum qty -->
       <div id="add-minqty-field" class="fg">
         <label>সর্বনিম্ন পরিমাণ (পিস / একক)</label>
         <input id="p-minqty" type="number" placeholder="1" min="1" value="1"/>
@@ -250,7 +245,7 @@ input:checked+.slider:before{transform:translateX(20px)}
 
       <div class="fg">
         <label>ছবির URL (imgbb)</label>
-        <input id="p-imgurl" type="url" placeholder="https://i.ibb.co/..." oninput="previewImg(this.value,'img-prev','img-ph')" />
+        <input type="url" id="p-imgurl" placeholder="https://i.ibb.co/..." oninput="previewImg(this.value,'img-prev','img-ph')" />
         <div class="img-prev" id="img-prev"><img id="img-prev-img" /><span id="img-ph">URL দিলে preview দেখাবে</span></div>
       </div>
       <div class="fg"><label>বিবরণ (ঐচ্ছিক)</label><input id="p-desc" type="text" placeholder="সংক্ষিপ্ত বিবরণ..." /></div>
@@ -258,7 +253,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
   </div>
 
-  <!-- PRODUCT LIST TAB -->
   <div id="tab-products" class="content" style="display:none">
     <div class="card">
       <div class="card-title">📋 সকল পণ্য</div>
@@ -266,7 +260,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
   </div>
 
-  <!-- CATEGORIES TAB -->
   <div id="tab-categories" class="content" style="display:none">
     <div class="card">
       <div class="card-title">🗂️ ক্যাটাগরি কাস্টমাইজ করুন</div>
@@ -279,7 +272,6 @@ input:checked+.slider:before{transform:translateX(20px)}
   </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div id="edit-modal">
   <div class="modal-box">
     <div class="modal-title">✏️ পণ্য সম্পাদনা</div>
@@ -295,7 +287,7 @@ input:checked+.slider:before{transform:translateX(20px)}
           <option value="other">📦 অন্যান্য</option>
         </select>
       </div>
-      <div class="fg"><label>একক</label>
+      <div class="fg"><label>একک</label>
         <select id="edit-unit">
           <option value="কেজি">কেজি</option>
           <option value="লিটার">লিটার</option>
@@ -311,7 +303,6 @@ input:checked+.slider:before{transform:translateX(20px)}
       <div class="fg"><label>Stock</label><input id="edit-stock" type="number" /></div>
     </div>
 
-    <!-- EDIT WEIGHT TOGGLE -->
     <div class="toggle-row">
       <div>
         <div class="toggle-label">⚖️ গ্রাম হিসেবে বিক্রি হয়?</div>
@@ -371,6 +362,13 @@ const CAT_ICONS = {grocery:"🛒",drinks:"🥤",pharmacy:"💊",food:"🍱",othe
 const CAT_LIST  = [
   {id:"grocery",name:"Grocery"},{id:"drinks",name:"Drinks"},
   {id:"pharmacy",name:"Pharmacy"},{id:"food",name:"Food"},{id:"other",name:"অন্যান্য"}
+];
+
+// ── রাইডারদের তালিকা (এখানে নতুন রাইডার যোগ করতে পারবেন) ──
+const RIDER_LIST = [
+  { id: "rider_01", name: "রহিম আলী" },
+  { id: "rider_02", name: "কুদ্দুস মিয়া" },
+  { id: "rider_03", name: "জাবির হোসেন" }
 ];
 
 // ── Auth ──────────────────────────────────────────────────
@@ -670,6 +668,14 @@ async function loadOrders(){
 
     el.innerHTML=orders.map(o=>{
       const ts=o.timestamp?.toDate?o.timestamp.toDate().toLocaleString("bn-BD"):"";
+      
+      // রাইডার ড্রপডাউন অপশন তৈরি
+      let riderOptions = `<option value="">🚚 রাইডার সিলেক্ট করুন</option>`;
+      RIDER_LIST.forEach(r => {
+        const selected = o.riderId === r.id ? ' selected' : '';
+        riderOptions += `<option value="${r.id}"${selected}>${r.name}</option>`;
+      });
+
       return `<div class="ocard">
         <div class="oheader">
           <span class="oid">${o.orderId||o.id}</span>
@@ -683,13 +689,25 @@ async function loadOrders(){
           💳 ${o.payment||o.paymentMethod||""} · ⏰ ${o.time||""}
           ${o.note?`<br>💬 ${o.note}`:""}
           ${ts?`<br>🕐 ${ts}`:""}
+          ${o.riderName?`<br><span style="color:var(--g2);font-weight:700">🚚 অ্যাসাইনড: ${o.riderName}</span>`:""}
         </div>
-        <select class="ssel" onchange="window._status('${o.id}',this.value)">
-          <option${(o.status||"Pending")==="Pending"?" selected":""} value="Pending">⏳ Pending</option>
-          <option${o.status==="Processing"?" selected":""} value="Processing">🔄 Processing</option>
-          <option${o.status==="Delivered"?" selected":""} value="Delivered">✅ Delivered</option>
-          <option${o.status==="Cancelled"?" selected":""} value="Cancelled">❌ Cancelled</option>
-        </select>
+        
+        <div class="two-col" style="margin-top:10px;">
+          <div>
+            <select class="ssel" style="margin-top:0;" onchange="window._status('${o.id}',this.value)">
+              <option${(o.status||"Pending")==="Pending"?" selected":""} value="Pending">⏳ Pending</option>
+              <option${o.status==="Processing"?" selected":""} value="Processing">🔄 Processing</option>
+              <option${o.status==="Dispatched"?" selected":""} value="Dispatched">🛵 Dispatched</option>
+              <option${o.status==="Delivered"?" selected":""} value="Delivered">✅ Delivered</option>
+              <option${o.status==="Cancelled"?" selected":""} value="Cancelled">❌ Cancelled</option>
+            </select>
+          </div>
+          <div>
+            <select class="ssel" style="margin-top:0;" onchange="window._assignRider('${o.id}',this.value)">
+              ${riderOptions}
+            </select>
+          </div>
+        </div>
       </div>`;
     }).join("");
   }catch(e){el.innerHTML='<div class="empty-state">লোড করতে সমস্যা হয়েছে</div>';}
@@ -698,6 +716,27 @@ async function loadOrders(){
 window._status=async(id,status)=>{
   try{await updateDoc(doc(db,"orders",id),{status});showToast("Status আপডেট হয়েছে ✓");loadOrders();}
   catch(e){showToast("❌ সমস্যা হয়েছে");}
+};
+
+window._assignRider=async(docId,riderId)=>{
+  if(!riderId){
+    try{
+      await updateDoc(doc(db,"orders",docId),{riderId:"",riderName:""});
+      showToast("Rider রিমুভ করা হয়েছে");
+      loadOrders();
+    }catch(e){}
+    return;
+  }
+  const selectedRider = RIDER_LIST.find(r => r.id === riderId);
+  try{
+    await updateDoc(doc(db,"orders",docId),{
+      riderId: riderId,
+      riderName: selectedRider.name,
+      status: "Dispatched" // রাইডার সেট করলেই অটোম্যাটিক স্ট্যাটাস Dispatched হয়ে যাবে
+    });
+    showToast(`✅ ${selectedRider.name}-কে দায়িত্ব দেওয়া হয়েছে`);
+    loadOrders();
+  }catch(e){showToast("❌ রাইডার অ্যাসাইন করা যায়নি");}
 };
 
 function showToast(msg){

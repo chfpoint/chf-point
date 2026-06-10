@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHF POINT — ডেলিভারি সার্ভিস</title>
+<style>
+:root {
+  --g1:#0d3320; --g2:#1a5c38; --g3:#2d8a57;
+  --accent:#f5a623; --accent2:#e8843a;
+  --bg:#f2f5f2; --card:#ffffff;
+  --text:#111; --muted:#6b7280; --border:#dde8dd;
+  --danger:#dc2626; --success:#16a34a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--g1);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.6s,visibility 0.6s}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.l-logo{width:72px;height:72px;background:var(--g2);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;animation:pop 0.7s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
+.l-brand{font-size:26px;font-weight:800;color:#fff;letter-spacing:3px;margin-top:14px;animation:fadeUp 0.5s ease 0.4s both}
+.l-brand em{color:var(--accent);font-style:normal}
+.l-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px;letter-spacing:1px;animation:fadeUp 0.5s ease 0.6s both}
+.l-dots{display:flex;gap:7px;margin-top:28px;animation:fadeUp 0.5s ease 0.8s both}
+.l-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)}
+.l-dots span:nth-child(1){animation:dot 1.2s ease 1s infinite}
+.l-dots span:nth-child(2){animation:dot 1.2s ease 1.15s infinite}
+.l-dots span:nth-child(3){animation:dot 1.2s ease 1.3s infinite}
+@keyframes pop{0%{opacity:0;transform:scale(0.4)}100%{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes dot{0%,100%{background:rgba(255,255,255,0.2);transform:scale(1)}50%{background:var(--accent);transform:scale(1.5)}}
+
+/* TOP BAR */
+.topbar{background:linear-gradient(135deg,var(--g1),var(--g2));padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.25)}
+.tl{display:flex;align-items:center;gap:10px}
+.tl-icon{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tl-text .brand{font-size:15px;font-weight:800;color:#fff;letter-spacing:1px}
+.tl-text .tag{font-size:10px;color:rgba(255,255,255,0.5)}
+.cart-btn{background:var(--accent);color:var(--g1);border:none;border-radius:22px;padding:7px 14px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;transition:transform 0.15s}
+.cart-btn:active{transform:scale(0.95)}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--border)}
+.tab{flex:1;padding:11px;text-align:center;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;font-weight:500}
+.tab.active{color:var(--g2);border-bottom-color:var(--g2);font-weight:700}
+
+/* CATEGORY PILLS */
+.sec-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;padding:14px 16px 6px}
+.pills{display:flex;gap:7px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{padding:7px 15px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13px;cursor:pointer;white-space:nowrap;color:var(--muted);flex-shrink:0;transition:all 0.2s;font-weight:500}
+.pill.on{background:var(--g2);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(29,94,56,0.3)}
+
+/* PRODUCT GRID */
+.grid{padding:0 12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcard{background:var(--card);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s}
+.pcard.in-cart{border-color:var(--g2);box-shadow:0 2px 12px rgba(29,94,56,0.15)}
+.pimg{width:100%;height:108px;object-fit:cover;background:#eef2ee}
+.pimg-ph{width:100%;height:108px;background:linear-gradient(135deg,#e8f5e9,#fef9ee);display:flex;align-items:center;justify-content:center;font-size:34px}
+.pbody{padding:9px}
+.pname{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px}
+.punit{font-size:11px;color:var(--muted);margin-bottom:5px}
+.pprice{font-size:15px;color:var(--g2);font-weight:800;margin-bottom:8px}
+.qty-row{display:flex;align-items:center;gap:6px}
+.qbtn{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--g2);font-weight:700;transition:background 0.1s}
+.qbtn:active{background:var(--bg)}
+.qnum{font-size:14px;font-weight:700;min-width:20px;text-align:center}
+
+/* CART SCREEN */
+.citem{background:#fff;border-radius:12px;border:1px solid var(--border);padding:11px 13px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start}
+.ci-left .ciname{font-size:14px;font-weight:600}
+.ci-left .cimeta{font-size:11px;color:var(--muted);margin-top:2px}
+.ci-right{text-align:right}
+.ci-right .ciprice{font-size:14px;font-weight:700;color:var(--g2)}
+.ci-right .cidel{font-size:11px;color:var(--muted);margin-top:1px}
+.ci-right .cirem{font-size:11px;color:var(--danger);cursor:pointer;margin-top:3px}
+
+/* SUMMARY BOX */
+.sumbox{margin:10px 14px;background:#fff;border-radius:14px;border:1px solid var(--border);padding:14px}
+.srow{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)}
+.srow.total{font-size:15px;font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:8px;padding-top:10px}
+.fund-note{margin-top:10px;background:#e8f5e9;border-radius:10px;padding:9px 11px;font-size:11px;color:var(--g2);line-height:1.6}
+
+/* FORM */
+.fwrap{padding:0 14px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:11px;font-size:14px;background:#fff;color:var(--text);font-family:inherit;transition:border-color 0.2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--g2)}
+.fg textarea{resize:none;height:70px}
+
+/* PAYMENT NOTE */
+.paynote{margin:0 14px 12px;background:#fffbeb;border:1.5px solid #fcd34d;border-radius:12px;padding:12px;font-size:12px;color:#92400e;line-height:1.7}
+.paynote strong{display:block;font-size:13px;margin-bottom:3px}
+
+/* SUBMIT BTN */
+.sub-btn{display:block;width:calc(100% - 28px);margin:0 14px 32px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;border:none;border-radius:13px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(29,94,56,0.3);transition:opacity 0.2s}
+.sub-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* SUCCESS */
+#suc-screen{display:none;padding:60px 24px;text-align:center}
+.suc-ic{font-size:64px;margin-bottom:16px}
+.suc-t{font-size:22px;font-weight:800;color:var(--g2);margin-bottom:8px}
+.suc-id{display:inline-block;margin:12px 0;background:#e8f5e9;color:var(--g2);font-weight:700;padding:8px 20px;border-radius:20px;font-size:13px}
+.suc-sub{font-size:14px;color:var(--muted);line-height:1.8}
+.new-btn{margin-top:20px;background:none;border:2px solid var(--g2);color:var(--g2);border-radius:13px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:9998;white-space:nowrap}
+.toast.show{opacity:1}
+.empty-state{padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-logo"><img src="https://i.ibb.co/1YnWLMGM/Gemini-Generated-Image-9ak2ny9ak2ny9ak2.png" style="width:52px;height:52px;object-fit:contain;border-radius:12px"></div>
+  <div class="l-brand"><em>CHF</em> POINT</div>
+  <div class="l-sub">আপনার বিশ্বস্ত ডেলিভারি সার্ভিস</div>
+  <div class="l-dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="main-screen">
+  <div class="topbar">
+    <div class="tl">
+      <div class="tl-icon"><img src="https://i.ibb.co/1YnWLMGM/Gemini-Generated-Image-9ak2ny9ak2ny9ak2.png" style="width:28px;height:28px;object-fit:contain;border-radius:6px"></div>
+      <div class="tl-text">
+        <div class="brand">CHF POINT</div>
+        <div class="tag">চতন্তর মানবিক ফান্ড</div>
+      </div>
+    </div>
+    <button class="cart-btn" onclick="goToCart()">🛒 <span id="cart-count">0</span> · ৳<span id="cart-top">0</span></button>
+  </div>
+  <div class="tabs">
+    <div class="tab active">পণ্য বাছাই</div>
+    <div class="tab" onclick="goToCart()">অর্ডার দিন</div>
+  </div>
+  <div class="sec-label">ক্যাটাগরি</div>
+  <div class="pills" id="cat-pills"></div>
+  <div class="grid" id="product-grid"></div>
+  <div style="height:28px"></div>
+</div>
+
+<!-- CART SCREEN -->
+<div id="cart-screen" style="display:none">
+  <div class="topbar">
+    <div class="tl">
+      <span onclick="goBack()" style="color:#fff;font-size:22px;cursor:pointer;margin-right:6px">←</span>
+      <div class="tl-icon"><img src="https://i.ibb.co/1YnWLMGM/Gemini-Generated-Image-9ak2ny9ak2ny9ak2.png" style="width:28px;height:28px;object-fit:contain;border-radius:6px"></div>
+      <div class="tl-text">
+        <div class="brand">CHF POINT</div>
+        <div class="tag">অর্ডার সম্পন্ন করুন</div>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab" onclick="goBack()">পণ্য বাছাই</div>
+    <div class="tab active">অর্ডার দিন</div>
+  </div>
+
+  <div class="sec-label">আপনার পণ্য তালিকা</div>
+  <div style="padding:0 14px" id="cart-list"></div>
+
+  <div class="sumbox">
+    <div class="srow"><span>পণ্যের মূল্য</span><span id="s-items">৳ 0</span></div>
+    <div class="srow"><span>ডেলিভারি চার্জ</span><span id="s-delivery">৳ 0</span></div>
+    <div class="srow total"><span>মোট পরিশোধ</span><span id="s-total">৳ 0</span></div>
+    <div class="fund-note">🌿 প্রতিটি বিক্রয়ের ১০% এবং ডেলিভারির ৫০% চতন্তর মানবিক ফান্ডে যায়। আপনার অর্ডারই একটি সহযোগিতা।</div>
+  </div>
+
+  <div class="sec-label">আপনার তথ্য</div>
+  <div class="fwrap">
+    <div class="fg"><label>পুরো নাম *</label><input id="f-name" type="text" placeholder="আপনার নাম লিখুন" /></div>
+    <div class="fg"><label>মোবাইল নম্বর *</label><input id="f-phone" type="tel" placeholder="01XXXXXXXXX" /></div>
+    <div class="fg"><label>ডেলিভারি ঠিকানা *</label><textarea id="f-address" placeholder="বাড়ি নম্বর, রাস্তা, বিস্তারিত ঠিকানা..."></textarea></div>
+    <div class="fg"><label>পছন্দের সময়</label>
+      <select id="f-time">
+        <option>সকাল ৯টা – দুপুর ১২টা</option>
+        <option>দুপুর ১২টা – বিকাল ৩টা</option>
+        <option>বিকাল ৩টা – সন্ধ্যা ৬টা</option>
+        <option>সন্ধ্যা ৬টা – রাত ৯টা</option>
+      </select>
+    </div>
+    <div class="fg"><label>পেমেন্ট পদ্ধতি *</label>
+      <select id="f-payment">
+        <option>ক্যাশ অন ডেলিভারি</option>
+        <option>বিকাশ</option>
+        <option>নগদ</option>
+      </select>
+    </div>
+    <div class="fg"><label>অন্যান্য পণ্য (ঐচ্ছিক)</label><textarea id="f-other" placeholder="list এ নেই এমন পণ্য থাকলে লিখুন..."></textarea></div>
+    <div class="fg"><label>বিশেষ নির্দেশনা (ঐচ্ছিক)</label><textarea id="f-note" placeholder="কোনো বিশেষ অনুরোধ..."></textarea></div>
+  </div>
+
+  <div class="paynote">
+    <strong>💳 পেমেন্ট নির্দেশনা</strong>
+    বিকাশ/নগদ: <strong>01610937223</strong> (Personal)<br>
+    টাকা পাঠানোর পর WhatsApp এ screenshot পাঠান: <strong>01610937223</strong>
+  </div>
+  <button class="sub-btn" id="submit-btn" onclick="submitOrder()">✅ অর্ডার Submit করুন</button>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div id="suc-screen">
+  <div class="suc-ic">✅</div>
+  <div class="suc-t">অর্ডার পাঠানো হয়েছে!</div>
+  <div class="suc-id" id="suc-id"></div>
+  <div class="suc-sub">আপনার অর্ডার পেয়েছি।<br>শীঘ্রই <strong>01610937223</strong> নম্বর থেকে<br>WhatsApp এ confirm করা হবে।</div>
+  <button class="new-btn" onclick="newOrder()">নতুন অর্ডার দিন</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// ══════════════════════════════════════════════
+// 🔧 CONFIG — এখানে তোমার Webhook URL বসাও
+const SHEET_WEBHOOK = "https://script.google.com/macros/s/AKfycbyb_tK9oLM5wOsPzkdM0YYf-oNn1RQmMVb5VQx58Qc1Fcme8If9fc4NnFT6Vwr5fzFZ/exec";
+// ══════════════════════════════════════════════
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDKeJSj8d3zRVtVWDEG6vjf8uRqPeQeWUU",
+  authDomain: "chf-point1.firebaseapp.com",
+  projectId: "chf-point1",
+  storageBucket: "chf-point1.firebasestorage.app",
+  messagingSenderId: "951665597653",
+  appId: "1:951665597653:web:bca64bd833f769849ed65c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const CATS = [
+  {id:"all", name:"সবগুলো", icon:"🛍️"},
+  {id:"grocery", name:"Grocery", icon:"🛒"},
+  {id:"drinks", name:"Drinks", icon:"🥤"},
+  {id:"pharmacy", name:"Pharmacy", icon:"💊"},
+  {id:"food", name:"Food", icon:"🍱"},
+  {id:"other", name:"অন্যান্য", icon:"📦"},
+];
+
+let allProducts = [];
+let cart = {};
+let activeCat = "all";
+
+// Weight extractor: "5Kg Alu, chini 2 KG" → 7, "আলু ৩ কেজি" → 3
+function extractWeight(text) {
+  let total = 0;
+  const banglaDigits = {"০":0,"১":1,"২":2,"৩":3,"৪":4,"৫":5,"৬":6,"৭":7,"৮":8,"৯":9};
+  // English kg
+  (text.match(/(\d+\.?\d*)\s*[kK][gG]/g)||[]).forEach(m => total += parseFloat(m));
+  // Bangla কেজি
+  (text.match(/([০-৯\d]+\.?[০-৯\d]*)\s*কেজি/g)||[]).forEach(m => {
+    const num = m.replace(/কেজি/g,"").trim()
+      .split("").map(c => banglaDigits[c]!==undefined?banglaDigits[c]:c).join("");
+    total += parseFloat(num)||0;
+  });
+  return total > 0 ? total : 0;
+}
+
+// Delivery charge formula
+function deliveryCharge(kg) {
+  if (!kg || kg <= 0) return 0;
+  if (kg <= 5) return 20;
+  return 20 + Math.ceil(kg - 5) * 2;
+}
+
+// Loader
+window.addEventListener("load", () => {
+  setTimeout(() => document.getElementById("loader").classList.add("hide"), 2000);
+});
+
+// Load products
+async function loadProducts() {
+  document.getElementById("product-grid").innerHTML = '<div class="empty-state">পণ্য লোড হচ্ছে...</div>';
+  try {
+    const snap = await getDocs(collection(db, "products"));
+    allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  } catch(e) { allProducts = []; }
+  renderCats();
+  renderProducts();
+}
+
+function renderCats() {
+  const active = ["all", ...new Set(allProducts.map(p => p.category))];
+  const list = CATS.filter(c => active.includes(c.id));
+  document.getElementById("cat-pills").innerHTML = list.map(c =>
+    `<div class="pill${c.id===activeCat?" on":""}" onclick="window._cat('${c.id}')">${c.icon} ${c.name}</div>`
+  ).join("");
+}
+
+function renderProducts() {
+  const list = activeCat==="all" ? allProducts : allProducts.filter(p=>p.category===activeCat);
+  if (!list.length) {
+    document.getElementById("product-grid").innerHTML = '<div class="empty-state" style="grid-column:1/-1">এই ক্যাটাগরিতে কোনো পণ্য নেই</div>';
+    return;
+  }
+  document.getElementById("product-grid").innerHTML = list.map(p => {
+    const qty = cart[p.id]||0;
+    const img = p.imageUrl
+      ? `<img class="pimg" src="${p.imageUrl}" alt="${p.name}" loading="lazy">`
+      : `<div class="pimg-ph">${CATS.find(c=>c.id===p.category)?.icon||"📦"}</div>`;
+    return `<div class="pcard${qty>0?" in-cart":""}" id="card-${p.id}">
+      ${img}
+      <div class="pbody">
+        <div class="pname">${p.name}</div>
+        <div class="punit">${p.unitLabel||"পিস"}</div>
+        <div class="pprice">৳ ${p.price}</div>
+        <div class="qty-row">
+          <button class="qbtn" onclick="window._qty('${p.id}',-1)">−</button>
+          <span class="qnum" id="qty-${p.id}">${qty}</span>
+          <button class="qbtn" onclick="window._qty('${p.id}',1)">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+window._cat = (id) => { activeCat=id; renderCats(); renderProducts(); };
+
+window._qty = (id, delta) => {
+  const cur = cart[id]||0;
+  const nxt = Math.max(0, cur+delta);
+  if (nxt===0) delete cart[id]; else cart[id]=nxt;
+  const qEl = document.getElementById("qty-"+id);
+  const cEl = document.getElementById("card-"+id);
+  if (qEl) qEl.textContent = nxt;
+  if (cEl) nxt>0 ? cEl.classList.add("in-cart") : cEl.classList.remove("in-cart");
+  updateBadge();
+  if (delta>0) { const p=allProducts.find(x=>x.id===id); showToast((p?.name||"পণ্য")+" যোগ হয়েছে ✓"); }
+};
+
+function getCartItems() {
+  return Object.keys(cart).map(id => {
+    const p = allProducts.find(x=>x.id===id);
+    return {...p, qty:cart[id], subtotal:p.price*cart[id]};
+  });
+}
+
+function updateBadge() {
+  const items = getCartItems();
+  document.getElementById("cart-count").textContent = items.reduce((s,i)=>s+i.qty,0);
+  document.getElementById("cart-top").textContent = items.reduce((s,i)=>s+i.subtotal,0);
+}
+
+window.goToCart = () => {
+  if (!Object.keys(cart).length) { showToast("আগে পণ্য বাছাই করুন"); return; }
+  document.getElementById("main-screen").style.display = "none";
+  document.getElementById("cart-screen").style.display = "block";
+  renderCart();
+};
+
+window.goBack = () => {
+  document.getElementById("cart-screen").style.display = "none";
+  document.getElementById("main-screen").style.display = "block";
+};
+
+function renderCart() {
+  const items = getCartItems();
+  // Calculate total weight from all order items names + qty
+  const orderText = items.map(i=>`${i.name} ${i.qty} ${i.unitLabel||""}`).join(", ");
+  const totalWeight = extractWeight(orderText) || items.reduce((s,i)=>s+i.qty,0);
+  const delCharge = deliveryCharge(totalWeight);
+  const itemsTotal = items.reduce((s,i)=>s+i.subtotal,0);
+
+  document.getElementById("cart-list").innerHTML = items.map(i=>`
+    <div class="citem">
+      <div class="ci-left">
+        <div class="ciname">${i.name}</div>
+        <div class="cimeta">${i.qty} ${i.unitLabel||"পিস"} × ৳${i.price}</div>
+      </div>
+      <div class="ci-right">
+        <div class="ciprice">৳ ${i.subtotal}</div>
+        <div class="cirem" onclick="window._remove('${i.id}')">বাদ দিন</div>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("s-items").textContent = "৳ "+itemsTotal;
+  document.getElementById("s-delivery").textContent = "৳ "+delCharge+" ("+totalWeight.toFixed(1)+" kg)";
+  document.getElementById("s-total").textContent = "৳ "+(itemsTotal+delCharge);
+}
+
+window._remove = (id) => {
+  delete cart[id];
+  updateBadge();
+  if (!Object.keys(cart).length) { goBack(); return; }
+  renderCart();
+};
+
+window.submitOrder = async () => {
+  const name    = document.getElementById("f-name").value.trim();
+  const phone   = document.getElementById("f-phone").value.trim();
+  const address = document.getElementById("f-address").value.trim();
+  if (!name||!phone||!address) { showToast("নাম, মোবাইল ও ঠিকানা দিন"); return; }
+
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true; btn.textContent = "পাঠানো হচ্ছে...";
+
+  const items = getCartItems();
+  const orderDetails = items.map(i=>`${i.name} ×${i.qty} ${i.unitLabel||""}`).join(", ");
+  const otherItems   = document.getElementById("f-other").value.trim();
+  const fullOrderText = otherItems ? orderDetails+", "+otherItems : orderDetails;
+  const totalWeight  = extractWeight(fullOrderText) || items.reduce((s,i)=>s+i.qty,0);
+  const delCharge    = deliveryCharge(totalWeight);
+  const itemsTotal   = items.reduce((s,i)=>s+i.subtotal,0);
+  const grandTotal   = itemsTotal + delCharge;
+  const orderId      = "CHF-"+Date.now().toString().slice(-6);
+  const payment      = document.getElementById("f-payment").value;
+  const time         = document.getElementById("f-time").value;
+  const note         = document.getElementById("f-note").value;
+
+  // 1️⃣ Firebase এ save
+  try {
+    await addDoc(collection(db,"orders"), {
+      orderId, name, phone, address, time, payment,
+      orderDetails: fullOrderText,
+      otherItems, note,
+      weight: totalWeight,
+      deliveryCharge: delCharge,
+      itemsTotal, grandTotal,
+      status: "Pending",
+      timestamp: serverTimestamp()
+    });
+  } catch(e) { console.warn("Firebase error:", e); }
+
+  // 2️⃣ Google Sheet এ save (no-cors)
+  try {
+    fetch(SHEET_WEBHOOK, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        customerName: name, phone, address, time, paymentMethod: payment,
+        orderDetails: fullOrderText, note,
+        weight: totalWeight, deliveryCharge: delCharge,
+        itemsTotal, grandTotal, orderId, status: "Pending"
+      })
+    });
+  } catch(e) { console.warn("Sheet sync error:", e); }
+
+  document.getElementById("cart-screen").style.display = "none";
+  document.getElementById("suc-screen").style.display  = "block";
+  document.getElementById("suc-id").textContent = "অর্ডার ID: "+orderId;
+};
+
+window.newOrder = () => {
+  cart = {};
+  document.getElementById("suc-screen").style.display  = "none";
+  document.getElementById("main-screen").style.display = "block";
+  document.getElementById("submit-btn").disabled = false;
+  document.getElementById("submit-btn").textContent = "✅ অর্ডার Submit করুন";
+  updateBadge();
+  renderProducts();
+};
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+window.showToast = showToast;
+
+loadProducts();
+</script>
+</body>
+</html>

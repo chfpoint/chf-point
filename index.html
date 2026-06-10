@@ -23,7 +23,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* LOADER */
 #loader{position:fixed;inset:0;background:var(--g1);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.6s,visibility 0.6s}
 #loader.hide{opacity:0;visibility:hidden;pointer-events:none}
-.l-logo{width:72px;height:72px;background:var(--g2);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;animation:pop 0.7s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
+.l-logo{width:72px;height:72px;background:var(--g2);border-radius:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:36px;animation:pop 0.7s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
 .l-brand{font-size:26px;font-weight:800;color:#fff;letter-spacing:3px;margin-top:14px;animation:fadeUp 0.5s ease 0.4s both}
 .l-brand em{color:var(--accent);font-style:normal}
 .l-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px;letter-spacing:1px;animation:fadeUp 0.5s ease 0.6s both}
@@ -121,7 +121,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="l-logo"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:52px;height:52px;object-fit:contain;border-radius:12px"></div>
+  <div class="l-logo"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
   <div class="l-brand"><em>CHF</em> POINT</div>
   <div class="l-sub">আপনার বিশ্বস্ত ডেলিভারি সার্ভিস</div>
   <div class="l-dots"><span></span><span></span><span></span></div>
@@ -131,7 +131,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 <div id="main-screen">
   <div class="topbar">
     <div class="tl">
-      <div class="tl-icon"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:28px;height:28px;object-fit:contain;border-radius:6px"></div>
+      <div class="tl-icon" style="overflow:hidden;padding:0"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
       <div class="tl-text">
         <div class="brand">CHF POINT</div>
         <div class="tag">চতন্তর মানবিক ফান্ড</div>
@@ -154,7 +154,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   <div class="topbar">
     <div class="tl">
       <span onclick="goBack()" style="color:#fff;font-size:22px;cursor:pointer;margin-right:6px">←</span>
-      <div class="tl-icon"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:28px;height:28px;object-fit:contain;border-radius:6px"></div>
+      <div class="tl-icon" style="overflow:hidden;padding:0"><img src="https://i.ibb.co/5WTs2rWR/Web-Icon-512-512x512.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
       <div class="tl-text">
         <div class="brand">CHF POINT</div>
         <div class="tag">অর্ডার সম্পন্ন করুন</div>
